@@ -29,24 +29,20 @@ public class CamController {
 			System.out.println(controller.getName());
 			while(!controller.isButtonPressed(0)) {
 				controller.poll();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				sleep();
 				float x = controller.getPovX();
 				float y = -1 * controller.getPovY();
 				if(x == 1) {
-					executeControlCode(controlCodes.get("right"));
+					executeControlCode("right");
 				}
 				if(x == -1) {
-					executeControlCode(controlCodes.get("left"));
+					executeControlCode("left");
 				}
 				if(y == 1) {
-					executeControlCode(controlCodes.get("top"));
+					executeControlCode("top");
 				}
 				if(y == -1) {
-					executeControlCode(controlCodes.get("bottom"));
+					executeControlCode("bottom");
 				}
 			}
 		} catch (LWJGLException e) {
@@ -54,7 +50,16 @@ public class CamController {
 		}
 	}
 
-	private static void executeControlCode(int controlCode) {
+	private static void sleep() {
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void executeControlCode(String controlString) {
+		int controlCode = controlCodes.get(controlString);
 		String parameters = "PanSingleMoveDegree="+camMoveSpeed+"&TiltSingleMoveDegree="+camMoveSpeed+"&PanTiltSingleMove=" + controlCode;
 		CamConnector.executePost(CamURL.CAM_CONTROL, parameters);
 	}

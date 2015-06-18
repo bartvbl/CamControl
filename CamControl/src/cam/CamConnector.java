@@ -9,13 +9,15 @@ import java.net.URL;
 
 
 public class CamConnector {
+	private static final String host = "http://192.168.1.123:8080";
+	
 	public static void sendMessage() {
 	}
 	
 	
 	public static String executePost(CamURL targetURL, String urlParameters) {
 		Authenticator.setDefault(new CamAuthenticator());
-		String target = "http://192.168.1.123:8080" + targetURL.address;
+		String target = host + targetURL.address;
 		
 			
 		HttpURLConnection connection = null;  
