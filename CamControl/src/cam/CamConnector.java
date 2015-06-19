@@ -1,30 +1,29 @@
 package cam;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
 public class CamConnector {
 	private static final String host = "http://192.168.1.123:8080";
 	
-	public static void sendMessage() {
+	public static InputStream openStream(CamURL targetURL) throws IOException {
+		HttpURLConnection connection = openConnection(targetURL);
+		return connection.getInputStream();
 	}
 	
-	
 	public static String executePost(CamURL targetURL, String urlParameters) {
-		Authenticator.setDefault(new CamAuthenticator());
-		String target = host + targetURL.address;
-		
 			
-		HttpURLConnection connection = null;  
+		HttpURLConnection connection = null;
 		try {
 			//Create connection
-			URL url = new URL(target);
-			connection = (HttpURLConnection)url.openConnection();
+			connection = openConnection(targetURL);
 
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", 
@@ -62,5 +61,13 @@ public class CamConnector {
 				connection.disconnect(); 
 			}
 		}
+	}
+
+	private static HttpURLConnection openConnection(CamURL targetURL) throws MalformedURLException, IOException {
+		Authenticator.setDefault(new CamAuthenticator());
+		String target = host + targetURL.address;
+		URL url = new URL(target);
+		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+		return connection;
 	}
 }
